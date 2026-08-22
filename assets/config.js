@@ -5,8 +5,7 @@ window.ZODIAC_CONFIG = {
   claimNote: 'GAME PRIZE WON',
   shopUrl: 'https://vt.tiktok.com/ZTDuB4sXB/?page=TikTokShop&utm_campaign=client_share&utm_source=messenger&share_app_id=1233',
   timezone: 'America/New_York',
-  tiktokLoginEnabled: false,
-  demoPreviewEnabled: true,
+  identityMode: 'username',
   paths: {
     home: '/',
     monday: '/monday/',
