@@ -4,9 +4,9 @@ window.ZODIAC_CONFIG = {
   brandName: 'The Zodiac Box',
   claimNote: 'GAME PRIZE WON',
   shopifyUrl: 'https://h1jtgz-ah.myshopify.com',
-  shopUrl: 'https://vt.tiktok.com/ZTDuB4sXB/?page=TikTokShop&utm_campaign=client_share&utm_source=messenger&share_app_id=1233',
+  shopUrl: 'https://h1jtgz-ah.myshopify.com',
   timezone: 'America/New_York',
-  identityMode: 'username',
+  identityMode: 'email',
   paths: {
     home: '/',
     monday: '/monday/',
