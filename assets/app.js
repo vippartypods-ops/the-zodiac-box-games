@@ -61,7 +61,7 @@ async function renderPrizeChoice(){
    html+=eligible.map(p=>`<div class="notice" style="margin-top:10px"><strong>${esc(p.prize)}</strong><div class="actions" style="margin-top:8px"><button class="chooseWeeklyPrize" data-play-id="${esc(p.id)}">Choose this prize</button></div></div>`).join('');
   }else html+='<p class="small">No eligible prize to choose this week yet.</p>';
   el.innerHTML=html;
-  $('.chooseWeeklyPrize',el).forEach(btn=>btn.addEventListener('click',async()=>{
+  $$('.chooseWeeklyPrize',el).forEach(btn=>btn.addEventListener('click',async()=>{
    if(!confirm('Choose this as your ONE free prize for the week? Your other prize will be forfeited.'))return;
    btn.disabled=true;
    try{await prizeChoiceRequest('choose',btn.dataset.playId);await renderPrizeChoice()}
