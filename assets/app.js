@@ -44,6 +44,20 @@ async function prizeChoiceRequest(action,playId){
  const res=await fetch(`${CFG.supabaseUrl}/functions/v1/choose-game-prize`,{method:'POST',headers:{'content-type':'application/json','apikey':CFG.supabasePublishableKey,'x-zodiac-session':sessionToken()},body:JSON.stringify({action,playId})});
  const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||'Could not save your prize choice');return data;
 }
+function confirmCosmicPrize(prizeName){
+ return new Promise(resolve=>{
+  const host=document.createElement('div');
+  host.innerHTML=`<div class="result-modal" role="dialog" aria-modal="true" aria-labelledby="zbPrizeConfirmTitle"><div class="result-card" style="max-width:480px;border:1px solid #cf9cfb;box-shadow:0 0 42px rgba(198,105,245,.24)"><button type="button" class="modal-close" aria-label="Close">×</button><div class="sparkles" style="font-size:2rem">☾ ✦ 🎁 ✦ ☽</div><h2 id="zbPrizeConfirmTitle">Is This Your Cosmic Pick?</h2><p>The stars have revealed <strong>${esc(prizeName)}</strong>!</p><div class="notice"><strong>✨ One magical gift per week</strong><p class="small" style="margin:.5rem 0 0">Once you choose, your selection is final and any other prize from this week is forfeited. Your free gift will be included only with a qualifying paid Shopify order using the same email.</p></div><div class="actions" style="justify-content:center;margin-top:20px;gap:12px"><button type="button" class="secondary zbBack">Go Back</button><button type="button" class="zbConfirm">✨ Claim My Prize</button></div></div></div>`;
+  document.body.appendChild(host);
+  const finish=value=>{document.removeEventListener('keydown',onKey);host.remove();resolve(value)};
+  const onKey=e=>{if(e.key==='Escape')finish(false)};
+  document.addEventListener('keydown',onKey);
+  $('.modal-close',host).addEventListener('click',()=>finish(false));
+  $('.zbBack',host).addEventListener('click',()=>finish(false));
+  $('.zbConfirm',host).addEventListener('click',()=>finish(true));
+  $('.zbConfirm',host).focus();
+ });
+}
 async function renderPrizeChoice(){
  const el=$('#prizeChoice');if(!el)return;
  if(!sessionToken()||!currentEmail()){el.innerHTML='<h2>🎁 Your Weekly Prize Choice</h2><p class="small">Enter your email above to see and choose your saved winnings.</p>';return}
@@ -62,7 +76,8 @@ async function renderPrizeChoice(){
   }else html+='<p class="small">No eligible prize to choose this week yet.</p>';
   el.innerHTML=html;
   $$('.chooseWeeklyPrize',el).forEach(btn=>btn.addEventListener('click',async()=>{
-   if(!confirm('Choose this as your ONE free prize for the week? Your other prize will be forfeited.'))return;
+   const selectedPrize=eligible.find(p=>p.id===btn.dataset.playId);
+   if(!await confirmCosmicPrize(selectedPrize?.prize||'your free gift'))return;
    btn.disabled=true;
    try{await prizeChoiceRequest('choose',btn.dataset.playId);await renderPrizeChoice()}
    catch(e){alert(e.message);btn.disabled=false}
